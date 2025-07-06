@@ -37,7 +37,13 @@ func (g *GUI) Run() {
 	errLabel := widget.NewLabel("")
 	startUSBButton := widget.NewButton("Start USB", func() {
 		g.deck.StartDaemon(context.Background())
+		go g.deck.RunUSB(context.Background())
 	})
+	startBluetoothButton := widget.NewButton("Start Bluetooth", func() {
+		g.deck.StartDaemon(context.Background())
+		go g.deck.RunBluetooth(context.Background())
+	})
+
 	startInputWindowButton := widget.NewButton("Show Mouse/Keyboard", func() {
 		go func() {
 			if g.inputWindow == nil {
@@ -65,6 +71,7 @@ func (g *GUI) Run() {
 			}
 		}
 		startUSBButton.Disable()
+		startBluetoothButton.Disable()
 		startInputWindowButton.Enable()
 	}()
 
@@ -74,6 +81,7 @@ func (g *GUI) Run() {
 	g.window.SetContent(container.NewVBox(
 		widget.NewLabel(fmt.Sprintf("DeckJoy")),
 		startUSBButton,
+		startBluetoothButton,
 		startInputWindowButton,
 		errLabel,
 		layout.NewSpacer(),
